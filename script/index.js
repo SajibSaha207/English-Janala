@@ -1,3 +1,19 @@
+const createElements = (arr) => {
+  const htmlelements = arr.map((el) => `<span class="btn">${el}</span>`);
+  return htmlelements.join(" ");
+  
+};
+
+const manageSpinner=(status)=>{
+  if(status==true){
+    document.getElementById("spinner").classList.remove("hidden");
+    document.getElementById("word-container").classList.add("hidden");
+  } else {
+document.getElementById("word-container").classList.remove("hidden");
+    document.getElementById("spinner").classList.add("hidden");
+  }
+};
+
 const loadLessons = () => {
     fetch("https://openapi.programming-hero.com/api/levels/all")
     .then((res) => res.json())
@@ -10,6 +26,7 @@ lessonButtons.forEach((btn) => btn.classList.remove("active"));
 };
 
 const loadLevelWord = (id) => {
+  manageSpinner(true);
     const url = `https://openapi.programming-hero.com/api/level/${id}`
     fetch(url)
     .then((res) => res.json())
@@ -35,17 +52,15 @@ const displayWordDetail = (word) =>{
       </div>
       <div class="">
         <h2 class="font-bold">Meaning</h2>
-        <p>আগ্রহী</p>
+        <p>${word.meaning}</p>
       </div>
       <div class="">
         <h2 class="font-bold">Example</h2>
-        <p>Lorem ipsum dolor sit amet.</p>
+        <p>${word.sentence}</p>
       </div>
       <div class="">
         <h2 class="font-bold">Synonym</h2>
-        <span class="btn">Syn1</span>
-        <span class="btn">Syn2</span>
-        <span class="btn">Syn3</span>
+        <div class="">${createElements(word.synonyms)}</div>
       </div>
     `
     document.getElementById("my_modal_5").showModal();
@@ -62,7 +77,9 @@ const displayLevelWord = (words) => {
   <p class="text-xl font-medium text-gray-400">এই Lesson এ এখনো কোন Vocabulary যুক্ত করা হয়নি। </p>
   <h2 class="font-medium text-4-xl">নেক্সট Lesson এ যান</h2>
 </div>
-        `
+        `;
+        manageSpinner(false);
+        
         return;
     }
        words.forEach((word) => {
@@ -81,6 +98,7 @@ const displayLevelWord = (words) => {
         `
         wordContainer.append(card);
     });
+    manageSpinner(false);
 
     };
 
